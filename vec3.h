@@ -15,7 +15,7 @@ public:
         return vec3(-e[0], -e[1], -e[2]);
     }
 
-    double operator[](int i) const
+    double operator[] (int i) const
     {
         return e[i];
     }
@@ -26,7 +26,7 @@ public:
     double y() { return e[1]; }
     double z() { return e[2]; }
 
-    vec3 operator+(vec3 &v) //加法
+    vec3 operator+=(const vec3 &v) //加法
     {
         e[0] += v.e[0];
         e[1] += v.e[1];
@@ -35,7 +35,7 @@ public:
         return *this;
     }
 
-    vec3 operator*(double t) //乘标量
+    vec3 operator*=(const double t)
     {
         e[0] *= t;
         e[1] *= t;
@@ -43,40 +43,20 @@ public:
         return *this;
     }
 
-    vec3 operator/(double t)
+    vec3 operator/=(const double t)
     {
-        return *this* (1/t);
+        return *this *= 1/t;
     }
 
-    double length_squared() //向量大小的平方
+    double length_squared() const //向量大小的平方
     {
         return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
     }
 
-    double length()
+    double length() const
     {
         return sqrt(length_squared());
     }
-
-    double dot(vec3 &v)
-    {
-        return e[0]*v.e[0]
-            +  e[1]*v.e[1]
-            +  e[2]*v.e[2];
-    }
-
-    vec3 cross(vec3 &v)
-    {
-        return vec3(e[1] * v.e[2] - e[2] * v.e[1],
-                    e[2] * v.e[0] - e[0] * v.e[2],
-                    e[0] * v.e[1] - e[1] * v.e[0]);
-    }
-
-    vec3 unit_vector()
-    {
-        return *this / length();
-    }
-
 
 public:
     double e[3];
@@ -111,17 +91,29 @@ vec3 operator*(const vec3 &v,double t)
     return t*v;
 }
 
-vec3 operator/(double t,const vec3 &v)
+vec3 operator/(const vec3 &v,double t)
 {
     return (1/t) *v;
 }
 
 vec3 unit_vector(vec3 v)
 {
-    return v/v.length();
+    return v / v.length();
 }
 
+double dot(const vec3 &u, const vec3 &v)
+{
+    return u.e[0]*v.e[0]
+        +  u.e[1]*v.e[1]
+        +  u.e[2]*v.e[2];
+}
 
+vec3 cross(const vec3 &u ,const vec3 &v)
+{
+    return vec3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
+                u.e[2] * v.e[0] - u.e[0] * v.e[2],
+                u.e[0] * v.e[1] - u.e[1] * v.e[0]);
+}
 
 using point3 = vec3;
 using color = vec3;
