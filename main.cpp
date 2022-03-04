@@ -1,39 +1,22 @@
+#include "constant.h"
+
 #include "color.h"
-#include "vec3.h"
-#include "ray.h"
+#include "hittable_list.h"
+#include "sphere.h"
+
 #include <iostream>
 
-double hit_sphere(const point3& center , double radius , const ray&r)//已知球心，半径，光线,求光线是否与球相交
-{
-    //t^2 * b·b  +  2tb · (A-C) + (A-C)·(A-C) - r^2
-    //a = b·b  b = 2b·(A-C)  c = (A-C)·(A-C)-r^2 
-    vec3 oc = r.origin() - center; // 定义P - C
-    auto a = r.direction().length_squared();
-    auto half_b = dot(oc, r.direction());
-    auto c = oc.length_squared() - radius * radius;
-    auto discriminant = half_b * half_b - a * c;//求根公式上部分根号下内容，用于判断正负而不求值
-    if(discriminant < 0)
-    {
-        return -1.0;
-    }
-    else
-    {
-        return (-half_b - sqrt(discriminant)) / a;
-    }
-    
-}
 
-color ray_color(const ray& r)//Get the color of the backgroud
+color ray_color(const ray& r, const hittable& world)//Get the color of the backgroud
 {
-    auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
-    if(t > 0.0)
+    hit_record rec;
+    if(world.hit(r,0,infinity,rec))
     {
-        vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));//法向量
-        return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+        return 0.5 * (rec.normal + color(1,1,1));
     }
     vec3 unit_direction = unit_vector(r.direction());
     //vec3 unit_direction = r.direction().unit_vector();
-    t = 0.5* (unit_direction.y()+1.0);
+    auto t = 0.5* (unit_direction.y()+1.0);
     return (1.0 - t)*color(RGB(212,242,231))+ t*color(RGB(0,119,255));
 }
 
@@ -44,6 +27,11 @@ int main() {
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
+    //World
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));//添加球体
+    world.add(make_shared<sphere>(point3(0,-100.5,-1),100));//添加背景球体
+    
     //Camera
     auto viewport_height = 2.0;
     auto viewport_width = aspect_ratio * viewport_height;
@@ -73,7 +61,7 @@ int main() {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r,world);
             write_color(std::cout,pixel_color);
             
         }
