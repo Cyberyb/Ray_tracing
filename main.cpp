@@ -8,17 +8,17 @@ double hit_sphere(const point3& center , double radius , const ray&r)//已知球
     //t^2 * b·b  +  2tb · (A-C) + (A-C)·(A-C) - r^2
     //a = b·b  b = 2b·(A-C)  c = (A-C)·(A-C)-r^2 
     vec3 oc = r.origin() - center; // 定义P - C
-    auto a = dot(r.direction(), r.direction());
-    auto b = 2.0 * dot(oc, r.direction());
-    auto c = dot(oc, oc) - radius * radius;
-    auto discriminant = b * b - 4 * a * c;//求根公式上部分根号下内容，用于判断正负而不求值
+    auto a = r.direction().length_squared();
+    auto half_b = dot(oc, r.direction());
+    auto c = oc.length_squared() - radius * radius;
+    auto discriminant = half_b * half_b - a * c;//求根公式上部分根号下内容，用于判断正负而不求值
     if(discriminant < 0)
     {
         return -1.0;
     }
     else
     {
-        return (-b - sqrt(discriminant)) / (2.0 * a);
+        return (-half_b - sqrt(discriminant)) / a;
     }
     
 }
