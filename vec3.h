@@ -58,6 +58,16 @@ public:
         return sqrt(length_squared());
     }
 
+    static vec3 random()
+    {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    static vec3 random(double min, double max)
+    {
+        return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+    }
+
 public:
     double e[3];
 };
@@ -113,6 +123,17 @@ vec3 cross(const vec3 &u ,const vec3 &v)
     return vec3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
                 u.e[2] * v.e[0] - u.e[0] * v.e[2],
                 u.e[0] * v.e[1] - u.e[1] * v.e[0]);
+}
+
+vec3 random_in_unit_sphere()
+{
+    while(true)
+    {
+        vec3 p = vec3::random(-1, 1);
+        if(p.length_squared()>=1)
+            continue;
+        return p;
+    }
 }
 
 using point3 = vec3;
