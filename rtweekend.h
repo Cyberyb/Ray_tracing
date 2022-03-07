@@ -1,5 +1,5 @@
-#ifndef CONSTANT_H
-#define CONSTANT_H
+#ifndef RTWEEKEND_H
+#define RTWEEKEND_H
 #include<cmath>
 #include<limits>
 #include<memory>

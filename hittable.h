@@ -2,10 +2,14 @@
 #define HITTABLE_H
 
 #include "ray.h"
+#include "rtweekend.h"
+
+class material;//前置声明
 struct hit_record
 {
     point3 p;//交点
     vec3 normal;//法线
+    shared_ptr<material> mat_ptr;
     double t;//根
     bool front_face; //Tell that the ray is in the sphere or outside
 

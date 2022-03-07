@@ -68,6 +68,14 @@ public:
         return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
     }
 
+    bool near_zero() const 
+    {
+        //如果向量非常贴近于0，则返回true
+        const auto s = 1e-8;
+        return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
+        //fabs求浮点数的绝对值   
+    }
+
 public:
     double e[3];
 };
@@ -134,6 +142,16 @@ vec3 random_in_unit_sphere()
             continue;
         return p;
     }
+}
+
+vec3 random_unit_vector()
+{
+    return unit_vector(random_in_unit_sphere());
+}
+
+vec3 reflect(const vec3& v, const vec3& n)//计算反射光线
+{
+    return v - 2 * dot(v, n) * n;
 }
 
 using point3 = vec3;

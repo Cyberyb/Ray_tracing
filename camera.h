@@ -1,6 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
-#include"constant.h"
+#include"rtweekend.h"
 
 class camera
 {
